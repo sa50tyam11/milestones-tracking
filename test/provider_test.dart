@@ -165,26 +165,26 @@ void main() {
       childProvider.setChild(createTestChild(ageInMonths: 6));
       milestoneProvider.loadMilestonesForCurrentChild();
 
-      milestoneProvider.recordAnswer('m1', AssessmentAnswer.yes);
+      milestoneProvider.recordAnswer('m1', AssessmentResponse.yes);
 
       expect(milestoneProvider.answers.containsKey('m1'), isTrue);
-      expect(milestoneProvider.answers['m1'], equals(AssessmentAnswer.yes));
+      expect(milestoneProvider.answers['m1']?.response, equals(AssessmentResponse.yes));
     });
 
     test('11. answer updating', () {
       childProvider.setChild(createTestChild(ageInMonths: 6));
       milestoneProvider.loadMilestonesForCurrentChild();
 
-      milestoneProvider.recordAnswer('m1', AssessmentAnswer.yes);
-      milestoneProvider.recordAnswer('m1', AssessmentAnswer.no); // Change answer
+      milestoneProvider.recordAnswer('m1', AssessmentResponse.yes);
+      milestoneProvider.recordAnswer('m1', AssessmentResponse.no); // Change answer
 
-      expect(milestoneProvider.answers['m1'], equals(AssessmentAnswer.no));
+      expect(milestoneProvider.answers['m1']?.response, equals(AssessmentResponse.no));
     });
 
     test('12. answer clearing', () {
       childProvider.setChild(createTestChild(ageInMonths: 6));
       milestoneProvider.loadMilestonesForCurrentChild();
-      milestoneProvider.recordAnswer('m1', AssessmentAnswer.yes);
+      milestoneProvider.recordAnswer('m1', AssessmentResponse.yes);
 
       milestoneProvider.clearAnswers();
 
@@ -198,10 +198,10 @@ void main() {
 
       expect(milestoneProvider.progress, equals(0.0));
 
-      milestoneProvider.recordAnswer('m1', AssessmentAnswer.yes);
+      milestoneProvider.recordAnswer('m1', AssessmentResponse.yes);
       expect(milestoneProvider.progress, equals(0.5));
 
-      milestoneProvider.recordAnswer('m2', AssessmentAnswer.no);
+      milestoneProvider.recordAnswer('m2', AssessmentResponse.no);
       expect(milestoneProvider.progress, equals(1.0));
     });
 
@@ -209,10 +209,10 @@ void main() {
       childProvider.setChild(createTestChild(ageInMonths: 6));
       milestoneProvider.loadMilestonesForCurrentChild();
 
-      milestoneProvider.recordAnswer('m1', AssessmentAnswer.yes);
+      milestoneProvider.recordAnswer('m1', AssessmentResponse.yes);
       expect(milestoneProvider.state, equals(AssessmentState.inProgress));
 
-      milestoneProvider.recordAnswer('m2', AssessmentAnswer.no);
+      milestoneProvider.recordAnswer('m2', AssessmentResponse.no);
       expect(milestoneProvider.state, equals(AssessmentState.completed));
     });
   });

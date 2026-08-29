@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../models/milestone.dart';
+import '../models/assessment_answer.dart';
 import '../core/constants/enums.dart';
 import '../repositories/milestone_repository.dart';
 import 'child_provider.dart';
@@ -122,12 +123,18 @@ class MilestoneProvider extends ChangeNotifier {
   }
 
   /// Records an answer for a specific milestone.
-  void recordAnswer(String milestoneId, AssessmentAnswer answer) {
+  void recordAnswer(String milestoneId, AssessmentResponse response, {String? notes, String? mediaPath}) {
     if (_state != AssessmentState.inProgress && _state != AssessmentState.completed) {
       return;
     }
 
-    _answers[milestoneId] = answer;
+    _answers[milestoneId] = AssessmentAnswer(
+      milestoneId: milestoneId,
+      response: response,
+      notes: notes,
+      mediaPath: mediaPath,
+      answeredAt: DateTime.now(),
+    );
 
     // Check completion
     if (_answers.length == _milestones.length) {

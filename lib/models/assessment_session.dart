@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import '../core/constants/enums.dart';
-import 'assessment_result.dart';
+import 'assessment_answer.dart';
 
 /// A complete screening session — all milestone answers for one child visit.
 ///
 /// [AssessmentSession] is the top-level object the backend receives (Phase 10)
 /// and the scoring engine consumes (Phase 8).
 ///
-/// Results are stored as [Map<String, AssessmentResult>] keyed by milestoneId
+/// Results are stored as [Map<String, AssessmentAnswer>] keyed by milestoneId
 /// for O(1) lookup — the scoring engine and UI both query by milestone ID
 /// constantly, making a list the wrong structure here.
 @immutable
@@ -16,7 +16,7 @@ class AssessmentSession {
     required this.sessionId,
     required this.childId,
     required this.ageGroup,
-    required this.results,
+    required this.answers,
     required this.startedAt,
     this.completedAt,
   });
@@ -32,7 +32,7 @@ class AssessmentSession {
   final AgeGroup ageGroup;
 
   /// All milestone answers for this session, keyed by [Milestone.id].
-  final Map<String, AssessmentResult> results;
+  final Map<String, AssessmentAnswer> answers;
 
   final DateTime startedAt;
 
@@ -46,16 +46,16 @@ class AssessmentSession {
 
   bool get isComplete => completedAt != null;
 
-  int get totalAnswered => results.length;
+  int get totalAnswered => answers.length;
 
   /// Convenience: all results where the answer was 'No'.
-  List<AssessmentResult> get failedResults => results.values
-      .where((r) => r.answer == AssessmentAnswer.no)
+  List<AssessmentAnswer> get failedAnswers => answers.values
+      .where((r) => r.response == AssessmentResponse.no)
       .toList();
 
   /// Convenience: all results where the answer was 'Not Sure'.
-  List<AssessmentResult> get uncertainResults => results.values
-      .where((r) => r.answer == AssessmentAnswer.notSure)
+  List<AssessmentAnswer> get uncertainAnswers => answers.values
+      .where((r) => r.response == AssessmentResponse.notSure)
       .toList();
 
   // ---------------------------------------------------------------------------
@@ -67,10 +67,10 @@ class AssessmentSession {
         sessionId: json['sessionId'] as String,
         childId:   json['childId'] as String,
         ageGroup:  AgeGroup.fromJson(json['ageGroup'] as String),
-        results: (json['results'] as Map<String, dynamic>).map(
+        answers: (json['answers'] as Map<String, dynamic>).map(
           (k, v) => MapEntry(
             k,
-            AssessmentResult.fromJson(v as Map<String, dynamic>),
+            AssessmentAnswer.fromJson(v as Map<String, dynamic>),
           ),
         ),
         startedAt:   DateTime.parse(json['startedAt'] as String),
@@ -83,7 +83,7 @@ class AssessmentSession {
         'sessionId':   sessionId,
         'childId':     childId,
         'ageGroup':    ageGroup.name,
-        'results':     results.map((k, v) => MapEntry(k, v.toJson())),
+        'answers':     answers.map((k, v) => MapEntry(k, v.toJson())),
         'startedAt':   startedAt.toIso8601String(),
         'completedAt': completedAt?.toIso8601String(),
       };
@@ -92,7 +92,7 @@ class AssessmentSession {
     String? sessionId,
     String? childId,
     AgeGroup? ageGroup,
-    Map<String, AssessmentResult>? results,
+    Map<String, AssessmentAnswer>? answers,
     DateTime? startedAt,
     DateTime? completedAt,
   }) =>
@@ -100,7 +100,7 @@ class AssessmentSession {
         sessionId:   sessionId   ?? this.sessionId,
         childId:     childId     ?? this.childId,
         ageGroup:    ageGroup    ?? this.ageGroup,
-        results:     results     ?? this.results,
+        answers:     answers     ?? this.answers,
         startedAt:   startedAt   ?? this.startedAt,
         completedAt: completedAt ?? this.completedAt,
       );

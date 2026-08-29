@@ -75,21 +75,21 @@ enum AgeGroup {
           orElse: () => throw ArgumentError('Unknown age group: $value'));
 }
 
-/// Caregiver's answer for each milestone question.
-enum AssessmentAnswer {
+/// Caregiver's response for each milestone question.
+enum AssessmentResponse {
   yes,
   no,
   notSure;
 
   String get label => switch (this) {
-        AssessmentAnswer.yes     => 'Yes',
-        AssessmentAnswer.no      => 'No',
-        AssessmentAnswer.notSure => 'Not Sure',
+        AssessmentResponse.yes     => 'Yes',
+        AssessmentResponse.no      => 'No',
+        AssessmentResponse.notSure => 'Not Sure',
       };
 
-  static AssessmentAnswer fromJson(String value) =>
-      AssessmentAnswer.values.firstWhere((e) => e.name == value,
-          orElse: () => throw ArgumentError('Unknown answer: $value'));
+  static AssessmentResponse fromJson(String value) =>
+      AssessmentResponse.values.firstWhere((e) => e.name == value,
+          orElse: () => throw ArgumentError('Unknown response: $value'));
 }
 
 /// Media type required for some milestones (observation-based evidence).
