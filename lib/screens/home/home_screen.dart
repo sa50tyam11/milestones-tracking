@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_colors.dart';
 import '../../providers/child_provider.dart';
+import '../../providers/milestone_provider.dart';
 
 /// Minimal Home screen acting as a placeholder landing zone after registration.
 class HomeScreen extends StatelessWidget {
@@ -67,15 +68,38 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   // Placeholder for Assessment entry point
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // Will navigate to MilestoneAssessment in Phase 8
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Assessment module coming soon.')),
+                  Consumer<MilestoneProvider>(
+                    builder: (context, milestoneProvider, _) {
+                      final isLoading = milestoneProvider.state == AssessmentState.loading;
+                      return ElevatedButton.icon(
+                        onPressed: isLoading ? null : () {
+                          // Trigger milestone loading via the provider
+                          milestoneProvider.loadMilestonesForCurrentChild();
+
+                          // Wait for state transition to complete, then show result
+                          Future.delayed(const Duration(milliseconds: 100), () {
+                            if (!context.mounted) return;
+                            final state = context.read<MilestoneProvider>().state;
+                            
+                            if (state == AssessmentState.error) {
+                              final error = context.read<MilestoneProvider>().errorMessage ?? 'Milestone screening is not available for this age.';
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(error), backgroundColor: AppColors.error),
+                              );
+                            } else if (state == AssessmentState.inProgress) {
+                              final count = context.read<MilestoneProvider>().currentMilestones.length;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Loaded $count milestones'), backgroundColor: AppColors.success),
+                              );
+                            }
+                          });
+                        },
+                        icon: isLoading 
+                            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.play_arrow_rounded),
+                        label: const Text(AppStrings.homeStartAssessment),
                       );
                     },
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Text(AppStrings.homeStartAssessment),
                   ),
                 ],
               );

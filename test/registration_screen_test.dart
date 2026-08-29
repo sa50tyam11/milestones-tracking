@@ -5,6 +5,7 @@ import 'package:child_health_screening/core/constants/app_strings.dart';
 import 'package:child_health_screening/models/child.dart';
 import 'package:child_health_screening/core/routes/app_routes.dart';
 import 'package:child_health_screening/providers/child_provider.dart';
+import 'package:child_health_screening/providers/milestone_provider.dart';
 import 'package:child_health_screening/screens/registration/registration_screen.dart';
 import 'package:child_health_screening/screens/home/home_screen.dart';
 
@@ -13,6 +14,7 @@ void main() {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: childProvider),
+        ChangeNotifierProvider(create: (_) => MilestoneProvider()),
       ],
       child: MaterialApp(
         routes: {
