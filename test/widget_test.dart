@@ -174,11 +174,5 @@ void main() {
       await tester.pump();
       expect(find.text(AppStrings.registrationTitle), findsWidgets);
     });
-
-    testWidgets('shows placeholder construction icon', (tester) async {
-      await tester.pumpWidget(buildRegistration());
-      await tester.pump();
-      expect(find.byIcon(Icons.construction_rounded), findsOneWidget);
-    });
   });
 }

@@ -53,10 +53,19 @@ abstract final class AppStrings {
   // ---------------------------------------------------------------------------
 
   static const String registrationTitle = 'Parent & Child Registration';
-  static const String registrationPlaceholder =
-      'Registration module — coming in Phase 5.';
   static const String registrationSubtitle =
       'Please provide parent and child details to begin screening.';
+
+  // Form Labels
+  static const String labelChildName = 'Child\'s Name';
+  static const String labelDateOfBirth = 'Date of Birth';
+  static const String labelGender = 'Gender';
+  static const String labelCaregiverName = 'Parent / Caregiver Name';
+  static const String labelPhoneNumber = 'Phone Number';
+  
+  // Validation Messages
+  static const String valRequiredField = 'This field is required';
+  static const String valFutureDate = 'Date of birth cannot be in the future';
 
   // ---------------------------------------------------------------------------
   // Navigation labels (bottom nav / drawer — future use)
@@ -67,6 +76,14 @@ abstract final class AppStrings {
   static const String navVaccination = 'Vaccination';
   static const String navHistory = 'History';
   static const String navDashboard = 'Dashboard';
+
+  // ---------------------------------------------------------------------------
+  // Home screen
+  // ---------------------------------------------------------------------------
+
+  static const String homeWelcome = 'Welcome';
+  static const String homeStartAssessment = 'Start Assessment';
+  static const String homeRegistrationSuccess = 'Registration successful.';
 
   // ---------------------------------------------------------------------------
   // Common / shared

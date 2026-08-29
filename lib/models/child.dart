@@ -27,7 +27,7 @@ class Child {
     required this.gender,
     required this.parentName,
     required this.phoneNumber,
-    required this.vaccinationStatus,
+    this.vaccinationStatus = VaccinationStatus.unknown,
     this.heightCm,
     this.weightKg,
     this.registeredAt,

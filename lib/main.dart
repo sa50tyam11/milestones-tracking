@@ -5,6 +5,7 @@ import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/home/welcome_screen.dart';
 import 'screens/registration/registration_screen.dart';
+import 'screens/home/home_screen.dart';
 import 'screens/splash/splash_screen.dart';
 import 'services/milestone_service.dart';
 import 'repositories/milestone_repository.dart';
@@ -115,8 +116,8 @@ class ShishuCareApp extends StatelessWidget {
           AppRoutes.welcome: (_) => const WelcomeScreen(),
           AppRoutes.registration: (_) => const RegistrationScreen(),
 
-          // Phase 5+ routes — will be added as screens are built
-          // AppRoutes.home:         (_) => const HomeScreen(),
+          // Phase 5+ routes
+          AppRoutes.home:         (_) => const HomeScreen(),
           // AppRoutes.childProfile: (_) => const ChildProfileScreen(),
 
           // Phase 8+ routes
