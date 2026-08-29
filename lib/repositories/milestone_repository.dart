@@ -36,8 +36,8 @@ import '../services/milestone_service.dart';
 /// );
 /// ```
 class MilestoneRepository {
-  const MilestoneRepository({required MilestoneService service})
-      : _service = service;
+  // ignore: prefer_initializing_formals
+  const MilestoneRepository({required MilestoneService service}) : _service = service;
 
   final MilestoneService _service;
 
