@@ -11,6 +11,8 @@ import 'services/milestone_service.dart';
 import 'repositories/milestone_repository.dart';
 import 'providers/child_provider.dart';
 import 'providers/milestone_provider.dart';
+import 'screens/milestone/milestone_assessment_screen.dart';
+import 'screens/milestone/assessment_complete_screen.dart';
 
 // ---------------------------------------------------------------------------
 // Application entry point
@@ -121,8 +123,8 @@ class ShishuCareApp extends StatelessWidget {
           // AppRoutes.childProfile: (_) => const ChildProfileScreen(),
 
           // Phase 8+ routes
-          // AppRoutes.milestoneAssessment: (_) => const MilestoneAssessmentScreen(),
-          // AppRoutes.milestoneResult:     (_) => const MilestoneResultScreen(),
+          AppRoutes.milestoneAssessment: (_) => const MilestoneAssessmentScreen(),
+          AppRoutes.milestoneResult:     (_) => const AssessmentCompleteScreen(),
 
           // Phase 11+ routes
           // AppRoutes.growth:      (_) => const GrowthScreen(),
