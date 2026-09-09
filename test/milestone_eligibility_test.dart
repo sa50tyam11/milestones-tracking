@@ -1,11 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:child_health_screening/models/child.dart';
 import 'package:child_health_screening/core/constants/enums.dart';
+import 'package:child_health_screening/services/local_storage_service.dart';
+import 'package:child_health_screening/models/assessment_session.dart';
+import 'package:child_health_screening/models/assessment_result.dart';
 import 'package:child_health_screening/models/milestone.dart';
 import 'package:child_health_screening/providers/child_provider.dart';
 import 'package:child_health_screening/providers/milestone_provider.dart';
 import 'package:child_health_screening/repositories/milestone_repository.dart';
 import 'package:child_health_screening/services/milestone_service.dart';
+
+class FakeLocalStorageService extends LocalStorageService {
+  @override
+  Future<void> saveAssessmentSession(AssessmentSession session) async {}
+  
+  @override
+  Future<void> saveAssessmentResult(AssessmentResult result) async {}
+}
 
 class FakeMilestoneService extends MilestoneService {
   final List<Milestone> _mockMilestones;
@@ -75,6 +86,7 @@ void main() {
       milestoneProvider.updateDependencies(
         repository: repository,
         childProvider: childProvider,
+        storageService: FakeLocalStorageService(),
       );
     });
 

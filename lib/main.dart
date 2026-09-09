@@ -11,6 +11,8 @@ import 'services/milestone_service.dart';
 import 'repositories/milestone_repository.dart';
 import 'providers/child_provider.dart';
 import 'providers/milestone_provider.dart';
+import 'services/local_storage_service.dart';
+import 'models/child.dart';
 import 'screens/milestone/milestone_assessment_screen.dart';
 import 'screens/milestone/assessment_complete_screen.dart';
 
@@ -24,34 +26,48 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Step 2: Initialize application services.
-  final milestoneService = await _initializeServices();
+  final services = await _initializeServices();
 
   // Step 3: Launch the application.
-  runApp(ShishuCareApp(milestoneService: milestoneService));
+  runApp(ShishuCareApp(
+    milestoneService: services.milestoneService,
+    storageService: services.storageService,
+    initialChild: services.initialChild,
+  ));
 }
 
 /// Initializes all services that must be ready before the first screen renders.
 ///
 /// Currently initializes:
 /// - [MilestoneService] — loads milestones.json into memory cache
-///
-/// ## Phase 3 note
-/// In Phase 3, the initialized [MilestoneService] instance will be stored
-/// in a [Provider] so the entire widget tree can access it.
-/// For now, we initialize it here and rely on the fact that
-/// [MilestoneService] is safe to construct again from any screen
-/// (subsequent calls to [initialise] are no-ops due to the [isInitialised] guard).
-///
-/// Future services (Firebase, analytics) will be initialized here too.
-Future<MilestoneService?> _initializeServices() async {
+/// - [LocalStorageService] — loads SharedPreferences and restores active child.
+Future<({MilestoneService? milestoneService, LocalStorageService storageService, Child? initialChild})> _initializeServices() async {
+  MilestoneService? milestoneService;
   try {
-    final milestoneService = MilestoneService();
+    milestoneService = MilestoneService();
     await milestoneService.initialise();
-    return milestoneService;
   } on MilestoneServiceException catch (e) {
     debugPrint('[ShishuCare] MilestoneService initialization failed: $e');
-    return null;
   }
+
+  final storageService = LocalStorageService();
+  await storageService.init();
+  
+  Child? initialChild;
+  try {
+    final activeChildId = storageService.getActiveChildId();
+    if (activeChildId != null) {
+      initialChild = storageService.getChild(activeChildId);
+    }
+  } catch (e) {
+    debugPrint('[ShishuCare] Failed to restore active child: $e');
+  }
+
+  return (
+    milestoneService: milestoneService,
+    storageService: storageService,
+    initialChild: initialChild,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -59,15 +75,23 @@ Future<MilestoneService?> _initializeServices() async {
 // ---------------------------------------------------------------------------
 
 class ShishuCareApp extends StatelessWidget {
-  const ShishuCareApp({super.key, this.milestoneService});
+  const ShishuCareApp({
+    super.key,
+    this.milestoneService,
+    required this.storageService,
+    this.initialChild,
+  });
 
   final MilestoneService? milestoneService;
+  final LocalStorageService storageService;
+  final Child? initialChild;
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         // 1. Base Services & Repositories (Dependency Injection)
+        Provider<LocalStorageService>.value(value: storageService),
         if (milestoneService != null)
           Provider<MilestoneService>.value(value: milestoneService!),
         
@@ -81,16 +105,20 @@ class ShishuCareApp extends StatelessWidget {
 
         // 2. Application State Providers
         ChangeNotifierProvider<ChildProvider>(
-          create: (_) => ChildProvider(),
+          create: (_) => ChildProvider(
+            storageService: storageService,
+            initialChild: initialChild,
+          ),
         ),
         
-        ChangeNotifierProxyProvider2<MilestoneRepository, ChildProvider, MilestoneProvider>(
+        ChangeNotifierProxyProvider3<MilestoneRepository, ChildProvider, LocalStorageService, MilestoneProvider>(
           create: (_) => MilestoneProvider(),
-          update: (_, repository, childProvider, previousProvider) {
+          update: (_, repository, childProvider, storage, previousProvider) {
             return (previousProvider ?? MilestoneProvider())
               ..updateDependencies(
                 repository: repository,
                 childProvider: childProvider,
+                storageService: storage,
               );
           },
         ),

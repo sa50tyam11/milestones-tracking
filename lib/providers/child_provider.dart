@@ -19,8 +19,16 @@ import '../models/child.dart';
 /// ## Future scope (Phase 4+)
 /// - Integration with a database/repository to fetch or persist the child.
 /// - For Phase 3, this remains an in-memory session wrapper.
+import '../services/local_storage_service.dart';
+
 class ChildProvider extends ChangeNotifier {
+  LocalStorageService? _storageService;
   Child? _currentChild;
+
+  ChildProvider({LocalStorageService? storageService, Child? initialChild}) {
+    _storageService = storageService;
+    _currentChild = initialChild;
+  }
 
   /// The currently active child, or null if none is selected.
   Child? get currentChild => _currentChild;
@@ -32,6 +40,8 @@ class ChildProvider extends ChangeNotifier {
   void setChild(Child child) {
     if (_currentChild != child) {
       _currentChild = child;
+      _storageService?.saveChild(child);
+      _storageService?.saveActiveChildId(child.id);
       notifyListeners();
     }
   }
@@ -41,6 +51,7 @@ class ChildProvider extends ChangeNotifier {
   void updateChild(Child updatedChild) {
     if (_currentChild?.id == updatedChild.id) {
       _currentChild = updatedChild;
+      _storageService?.saveChild(updatedChild);
       notifyListeners();
     }
   }
@@ -49,6 +60,7 @@ class ChildProvider extends ChangeNotifier {
   void clearChild() {
     if (_currentChild != null) {
       _currentChild = null;
+      _storageService?.clearActiveChildId();
       notifyListeners();
     }
   }

@@ -1,8 +1,12 @@
 import 'package:flutter/foundation.dart';
 import '../models/milestone.dart';
 import '../models/assessment_answer.dart';
+import '../models/assessment_session.dart';
+import '../models/assessment_result.dart';
 import '../core/constants/enums.dart';
 import '../repositories/milestone_repository.dart';
+import '../services/milestone_scoring_service.dart';
+import '../services/local_storage_service.dart';
 import 'child_provider.dart';
 
 /// Represents the high-level stages of a milestone assessment flow.
@@ -31,6 +35,7 @@ class MilestoneProvider extends ChangeNotifier {
   // Dependencies injected via ProxyProvider
   MilestoneRepository? _repository;
   ChildProvider? _childProvider;
+  LocalStorageService? _storageService;
 
   // ---------------------------------------------------------------------------
   // State
@@ -38,6 +43,7 @@ class MilestoneProvider extends ChangeNotifier {
 
   AssessmentState _state = AssessmentState.initial;
   String? _errorMessage;
+  DateTime? _startedAt;
 
   /// The active set of milestones being assessed.
   List<Milestone> _milestones = [];
@@ -70,13 +76,15 @@ class MilestoneProvider extends ChangeNotifier {
   // Dependency Injection Update
   // ---------------------------------------------------------------------------
 
-  /// Called by `ChangeNotifierProxyProvider2` whenever dependencies change.
+  /// Called by `ChangeNotifierProxyProvider3` whenever dependencies change.
   void updateDependencies({
     required MilestoneRepository repository,
     required ChildProvider childProvider,
+    required LocalStorageService storageService,
   }) {
     _repository = repository;
     _childProvider = childProvider;
+    _storageService = storageService;
   }
 
   // ---------------------------------------------------------------------------
@@ -116,6 +124,7 @@ class MilestoneProvider extends ChangeNotifier {
 
       _milestones = result.milestones;
       _answers.clear();
+      _startedAt = DateTime.now();
       _setState(AssessmentState.inProgress);
     } catch (e) {
       _setState(AssessmentState.error, error: e.toString());
@@ -143,6 +152,35 @@ class MilestoneProvider extends ChangeNotifier {
       // Re-trigger progress updates
       notifyListeners();
     }
+  }
+
+  /// Submits the current assessment, generates a session, scores it, and returns the result.
+  /// Does not modify the provider's active state, simply executes the scoring flow.
+  Future<AssessmentResult?> submitAssessment() async {
+    if (_state != AssessmentState.completed) return null;
+    
+    final child = _childProvider?.currentChild;
+    if (child == null) return null;
+
+    final session = AssessmentSession(
+      sessionId: DateTime.now().millisecondsSinceEpoch.toString(), // MVP session ID
+      childId: child.id,
+      ageGroup: child.ageGroup!,
+      answers: _answers,
+      startedAt: _startedAt ?? DateTime.now(),
+      completedAt: DateTime.now(),
+    );
+
+    final scoringService = MilestoneScoringService();
+    final result = scoringService.score(session, _milestones);
+    
+    // Save to local storage
+    if (_storageService != null) {
+      await _storageService!.saveAssessmentSession(session);
+      await _storageService!.saveAssessmentResult(result);
+    }
+    
+    return result;
   }
 
   /// Clears all currently recorded answers and resets to inProgress.

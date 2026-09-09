@@ -2,10 +2,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:child_health_screening/models/child.dart';
 import 'package:child_health_screening/models/milestone.dart';
 import 'package:child_health_screening/core/constants/enums.dart';
+import 'package:child_health_screening/services/local_storage_service.dart';
+import 'package:child_health_screening/models/assessment_session.dart';
+import 'package:child_health_screening/models/assessment_result.dart';
 import 'package:child_health_screening/repositories/milestone_repository.dart';
 import 'package:child_health_screening/services/milestone_service.dart';
 import 'package:child_health_screening/providers/child_provider.dart';
 import 'package:child_health_screening/providers/milestone_provider.dart';
+
+class FakeLocalStorageService extends LocalStorageService {
+  @override
+  Future<void> saveAssessmentSession(AssessmentSession session) async {}
+  
+  @override
+  Future<void> saveAssessmentResult(AssessmentResult result) async {}
+}
 
 // ---------------------------------------------------------------------------
 // Fake Service for testing
@@ -123,6 +134,7 @@ void main() {
       milestoneProvider.updateDependencies(
         repository: repository,
         childProvider: childProvider,
+        storageService: FakeLocalStorageService(),
       );
     });
 
@@ -214,6 +226,29 @@ void main() {
 
       milestoneProvider.recordAnswer('m2', AssessmentResponse.no);
       expect(milestoneProvider.state, equals(AssessmentState.completed));
+    });
+
+    test('15. submitAssessment returns null if not completed', () async {
+      childProvider.setChild(createTestChild(ageInMonths: 6));
+      milestoneProvider.loadMilestonesForCurrentChild();
+
+      milestoneProvider.recordAnswer('m1', AssessmentResponse.yes);
+      
+      final result = await milestoneProvider.submitAssessment();
+      expect(result, isNull);
+    });
+
+    test('16. submitAssessment returns result if completed', () async {
+      childProvider.setChild(createTestChild(ageInMonths: 6));
+      milestoneProvider.loadMilestonesForCurrentChild();
+
+      milestoneProvider.recordAnswer('m1', AssessmentResponse.yes);
+      milestoneProvider.recordAnswer('m2', AssessmentResponse.no);
+      
+      final result = await milestoneProvider.submitAssessment();
+      expect(result, isNotNull);
+      expect(result!.childId, equals('test_child_1'));
+      expect(result.status, equals('completed_pending_clinical_interpretation'));
     });
   });
 }

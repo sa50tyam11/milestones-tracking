@@ -5,7 +5,6 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/enums.dart';
 import '../../core/routes/app_routes.dart';
 import '../../models/milestone.dart';
-import '../../models/assessment_session.dart';
 import '../../providers/child_provider.dart';
 import '../../providers/milestone_provider.dart';
 
@@ -18,7 +17,6 @@ class MilestoneAssessmentScreen extends StatefulWidget {
 
 class _MilestoneAssessmentScreenState extends State<MilestoneAssessmentScreen> {
   int _currentIndex = 0;
-  DateTime? _startedAt;
   bool _isReviewMode = false;
   bool _initiallyLoaded = false;
 
@@ -41,7 +39,6 @@ class _MilestoneAssessmentScreenState extends State<MilestoneAssessmentScreen> {
       return;
     }
 
-    _startedAt = DateTime.now();
     milestoneProvider.loadMilestonesForCurrentChild();
     setState(() {
       _initiallyLoaded = true;
@@ -79,24 +76,20 @@ class _MilestoneAssessmentScreenState extends State<MilestoneAssessmentScreen> {
     }
   }
 
-  void _submitAssessment() {
+  Future<void> _submitAssessment() async {
     final milestoneProvider = context.read<MilestoneProvider>();
-    final childProvider = context.read<ChildProvider>();
 
-    final session = AssessmentSession(
-      sessionId: DateTime.now().millisecondsSinceEpoch.toString(), // MVP session ID
-      childId: childProvider.currentChild!.id,
-      ageGroup: childProvider.currentChild!.ageGroup!,
-      answers: milestoneProvider.answers,
-      startedAt: _startedAt ?? DateTime.now(),
-      completedAt: DateTime.now(),
-    );
+    final result = await milestoneProvider.submitAssessment();
+    
+    if (!mounted) return;
 
-    // Navigate to completion and pass the session
-    Navigator.of(context).pushReplacementNamed(
-      AppRoutes.milestoneResult,
-      arguments: session,
-    );
+    if (result != null) {
+      // Navigate to completion and pass the result
+      Navigator.of(context).pushReplacementNamed(
+        AppRoutes.milestoneResult,
+        arguments: result,
+      );
+    }
   }
 
   @override

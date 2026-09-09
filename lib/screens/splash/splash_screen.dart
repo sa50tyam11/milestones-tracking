@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/routes/app_routes.dart';
+import '../../providers/child_provider.dart';
 
 /// The application entry screen.
 ///
@@ -48,7 +51,12 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _navigateAfterDelay() async {
     await Future.delayed(_splashDuration);
     if (!mounted) return;
-    await Navigator.pushReplacementNamed(context, AppRoutes.welcome);
+    
+    // Read the current child state to determine routing
+    final childProvider = context.read<ChildProvider>();
+    final targetRoute = childProvider.hasChild ? AppRoutes.home : AppRoutes.welcome;
+    
+    await Navigator.pushReplacementNamed(context, targetRoute);
   }
 
   @override
