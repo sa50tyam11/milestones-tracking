@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/child.dart';
 import '../models/assessment_session.dart';
 import '../models/assessment_result.dart';
+import '../models/module_result.dart';
 
 /// Service responsible for local persistence using SharedPreferences.
 /// 
@@ -18,6 +19,7 @@ class LocalStorageService {
   static const String _childrenPrefix = 'child_';
   static const String _sessionsPrefix = 'sessions_';
   static const String _resultsPrefix = 'results_';
+  static const String _moduleResultsPrefix = 'mod_res_';
   
   /// Initializes the SharedPreferences instance. Must be called before any operations.
   Future<void> init() async {
@@ -176,5 +178,34 @@ class LocalStorageService {
       }
     }
     return [];
+  }
+
+  // ---------------------------------------------------------------------------
+  // Generic Module Results
+  // ---------------------------------------------------------------------------
+
+  /// Saves a generic module result for future integration (Eye Tracking, Nutrition).
+  Future<void> saveModuleResult(ModuleResult result) async {
+    if (!_isInitialised) return;
+    final key = '$_moduleResultsPrefix${result.childId}_${result.module}';
+    final jsonString = jsonEncode(result.toJson());
+    await _prefs.setString(key, jsonString);
+  }
+
+  /// Retrieves a specific module result for a child.
+  ModuleResult? getModuleResult(String childId, String module) {
+    if (!_isInitialised) return null;
+    final key = '$_moduleResultsPrefix${childId}_$module';
+    final jsonString = _prefs.getString(key);
+    
+    if (jsonString != null) {
+      try {
+        final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+        return ModuleResult.fromJson(jsonMap);
+      } catch (e) {
+        debugPrint('[LocalStorageService] Failed to parse ModuleResult for $childId/$module: $e');
+      }
+    }
+    return null;
   }
 }

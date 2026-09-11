@@ -67,13 +67,13 @@ class HomeScreen extends StatelessWidget {
                         ),
                   ),
                   const Spacer(),
-                  // Placeholder for Assessment entry point
+                  // Entry point to the Final Dashboard
                   ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.milestoneAssessment);
+                      Navigator.pushNamed(context, AppRoutes.dashboard);
                     },
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Text(AppStrings.homeStartAssessment),
+                    icon: const Icon(Icons.dashboard_rounded),
+                    label: const Text(AppStrings.navDashboard),
                   ),
                 ],
               );

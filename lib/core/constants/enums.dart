@@ -165,3 +165,25 @@ enum MilestoneDifficulty {
         orElse: () => throw ArgumentError('Unknown difficulty: $value'),
       );
 }
+
+/// Technical status of an assessment module.
+/// 
+/// This is a software state, NOT a clinical diagnosis.
+enum ModuleStatus {
+  notStarted,
+  pending,
+  completed,
+  failed;
+
+  String get label => switch (this) {
+        ModuleStatus.notStarted => 'Not Started',
+        ModuleStatus.pending    => 'Pending',
+        ModuleStatus.completed  => 'Completed',
+        ModuleStatus.failed     => 'Failed',
+      };
+
+  static ModuleStatus fromJson(String value) => ModuleStatus.values.firstWhere(
+        (e) => e.name == value,
+        orElse: () => throw ArgumentError('Unknown module status: $value'),
+      );
+}

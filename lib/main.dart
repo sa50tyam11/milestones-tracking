@@ -15,6 +15,8 @@ import 'services/local_storage_service.dart';
 import 'models/child.dart';
 import 'screens/milestone/milestone_assessment_screen.dart';
 import 'screens/milestone/assessment_complete_screen.dart';
+import 'providers/dashboard_provider.dart';
+import 'screens/dashboard/final_dashboard_screen.dart';
 
 // ---------------------------------------------------------------------------
 // Application entry point
@@ -122,6 +124,17 @@ class ShishuCareApp extends StatelessWidget {
               );
           },
         ),
+        
+        ChangeNotifierProxyProvider2<LocalStorageService, ChildProvider, DashboardProvider>(
+          create: (_) => DashboardProvider(),
+          update: (_, storage, childProvider, previousProvider) {
+            return (previousProvider ?? DashboardProvider())
+              ..updateDependencies(
+                storageService: storage,
+                childProvider: childProvider,
+              );
+          },
+        ),
       ],
       child: MaterialApp(
         // Application title — shown in device task switcher
@@ -161,7 +174,7 @@ class ShishuCareApp extends StatelessWidget {
           // Phase 14+ routes
           // AppRoutes.compositeResult:    (_) => const CompositeResultScreen(),
           // AppRoutes.assessmentHistory:  (_) => const AssessmentHistoryScreen(),
-          // AppRoutes.dashboard:          (_) => const DashboardScreen(),
+          AppRoutes.dashboard:          (_) => const FinalDashboardScreen(),
         },
       ),
     );
