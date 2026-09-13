@@ -20,6 +20,7 @@ class LocalStorageService {
   static const String _sessionsPrefix = 'sessions_';
   static const String _resultsPrefix = 'results_';
   static const String _moduleResultsPrefix = 'mod_res_';
+  static const String _growthPrefix = 'growth_';
   
   /// Initializes the SharedPreferences instance. Must be called before any operations.
   Future<void> init() async {
@@ -207,5 +208,39 @@ class LocalStorageService {
       }
     }
     return null;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Growth Assessments
+  // ---------------------------------------------------------------------------
+
+  /// Saves a raw growth assessment for a child.
+  Future<void> saveGrowthAssessment(dynamic assessment) async {
+    if (!_isInitialised) return;
+    // Assuming assessment is GrowthAssessment, but using dynamic to avoid importing 
+    // growth_assessment.dart if it creates cyclic dependencies, though it shouldn't.
+    final key = '$_growthPrefix${assessment.childId}_${assessment.id}';
+    final jsonString = jsonEncode(assessment.toJson());
+    await _prefs.setString(key, jsonString);
+  }
+
+  /// Retrieves all raw growth assessments for a specific child.
+  List<dynamic> getGrowthAssessmentsForChildRaw(String childId) {
+    if (!_isInitialised) return [];
+    final prefix = '$_growthPrefix${childId}_';
+    final keys = _prefs.getKeys().where((k) => k.startsWith(prefix));
+    
+    final assessments = [];
+    for (final key in keys) {
+      final jsonString = _prefs.getString(key);
+      if (jsonString != null) {
+        try {
+          assessments.add(jsonDecode(jsonString));
+        } catch (e) {
+          debugPrint('[LocalStorageService] Failed to parse growth assessment at $key: $e');
+        }
+      }
+    }
+    return assessments;
   }
 }

@@ -81,6 +81,14 @@ class DashboardProvider extends ChangeNotifier {
         updatedAt: DateTime.now(),
       );
 
+      ModuleResult? growthResult = _storageService!.getModuleResult(activeChild.id, 'growth');
+      growthResult ??= ModuleResult(
+        module: 'growth',
+        childId: activeChild.id,
+        status: ModuleStatus.notStarted,
+        updatedAt: DateTime.now(),
+      );
+
       ModuleResult? nutritionResult = _storageService!.getModuleResult(activeChild.id, 'nutrition');
       nutritionResult ??= ModuleResult(
         module: 'nutrition',
@@ -92,6 +100,7 @@ class DashboardProvider extends ChangeNotifier {
       _currentProfile = ChildProfile(
         child: activeChild,
         milestoneResult: milestoneModuleResult,
+        growthResult: growthResult,
         eyeTrackingResult: eyeTrackingResult,
         nutritionResult: nutritionResult,
       );

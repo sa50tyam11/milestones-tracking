@@ -38,7 +38,7 @@ void main() {
     return Milestone(
       id: id,
       ageGroup: ageGroup,
-      domain: DevelopmentDomain.grossMotor,
+      domain: DevelopmentDomain.physicalDevelopment,
       title: 'Test $id',
       description: 'Desc',
       instruction: 'Inst',

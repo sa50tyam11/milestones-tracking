@@ -12,6 +12,7 @@ class ChildProfile {
   const ChildProfile({
     required this.child,
     this.milestoneResult,
+    this.growthResult,
     this.eyeTrackingResult,
     this.nutritionResult,
   });
@@ -20,6 +21,9 @@ class ChildProfile {
   
   /// Converted from AssessmentResult
   final ModuleResult? milestoneResult;
+  
+  /// From Growth Monitoring
+  final ModuleResult? growthResult;
   
   /// Future integration
   final ModuleResult? eyeTrackingResult;
@@ -31,6 +35,7 @@ class ChildProfile {
   /// This is a technical completion check, NOT a medical evaluation.
   bool get isFullyCompleted {
     return _isCompleted(milestoneResult) &&
+           _isCompleted(growthResult) &&
            _isCompleted(eyeTrackingResult) &&
            _isCompleted(nutritionResult);
   }
@@ -45,6 +50,7 @@ class ChildProfile {
       other is ChildProfile &&
           other.child.id == child.id &&
           other.milestoneResult == milestoneResult &&
+          other.growthResult == growthResult &&
           other.eyeTrackingResult == eyeTrackingResult &&
           other.nutritionResult == nutritionResult;
 
@@ -52,6 +58,7 @@ class ChildProfile {
   int get hashCode =>
       child.id.hashCode ^
       milestoneResult.hashCode ^
+      growthResult.hashCode ^
       eyeTrackingResult.hashCode ^
       nutritionResult.hashCode;
 

@@ -82,6 +82,16 @@ class FinalDashboardScreen extends StatelessWidget {
                     },
                   ),
 
+                  // Growth Monitoring Module
+                  ModuleStatusCard(
+                    title: 'Growth Monitoring',
+                    status: profile.growthResult?.status ?? ModuleStatus.notStarted,
+                    icon: Icons.show_chart,
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.growth);
+                    },
+                  ),
+
                   // Eye Tracking Module
                   ModuleStatusCard(
                     title: 'Eye Tracking (NeuroGaze)',

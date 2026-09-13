@@ -3,8 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:child_health_screening/services/local_storage_service.dart';
 import 'package:child_health_screening/models/child.dart';
 import 'package:child_health_screening/models/assessment_session.dart';
-import 'package:child_health_screening/models/assessment_result.dart';
 import 'package:child_health_screening/models/assessment_answer.dart';
+import 'package:child_health_screening/models/assessment_result.dart';
+import 'package:child_health_screening/models/growth_assessment.dart';
 import 'package:child_health_screening/core/constants/enums.dart';
 
 void main() {
@@ -176,6 +177,26 @@ void main() {
       // Should not throw, should return null
       final retrieved = storage.getChild('c1');
       expect(retrieved, isNull);
+    });
+
+    test('save and retrieve raw growth assessment', () async {
+      final assessment = GrowthAssessment(
+        id: 'growth1',
+        childId: 'child1',
+        dateOfBirth: DateTime(2025, 1, 1),
+        measuredAt: DateTime(2025, 6, 1),
+        gender: Gender.male,
+        weightKg: 7.5,
+        lengthOrHeightCm: 65.0,
+        measurementType: MeasurementType.length,
+      );
+
+      await storage.saveGrowthAssessment(assessment);
+
+      final rawAssessments = storage.getGrowthAssessmentsForChildRaw('child1');
+      expect(rawAssessments.length, 1);
+      expect(rawAssessments.first['id'], 'growth1');
+      expect(rawAssessments.first['weightKg'], 7.5);
     });
   });
 }

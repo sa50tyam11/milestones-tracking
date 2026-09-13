@@ -4,28 +4,25 @@ library;
 
 /// WHO developmental domains assessed per milestone.
 enum DevelopmentDomain {
-  grossMotor,
-  fineMotor,
+  physicalDevelopment,
   languageCommunication,
   cognitive,
-  socialBehavioral;
+  socialEmotional;
 
   /// Human-readable label used in UI and reports.
   String get label => switch (this) {
-        DevelopmentDomain.grossMotor         => 'Gross Motor',
-        DevelopmentDomain.fineMotor          => 'Fine Motor',
+        DevelopmentDomain.physicalDevelopment => 'Movement/Physical Development',
         DevelopmentDomain.languageCommunication => 'Language & Communication',
         DevelopmentDomain.cognitive          => 'Cognitive',
-        DevelopmentDomain.socialBehavioral   => 'Social & Behavioral',
+        DevelopmentDomain.socialEmotional    => 'Social & Emotional',
       };
 
   /// Icon asset name — wire up your own assets later.
   String get iconName => switch (this) {
-        DevelopmentDomain.grossMotor         => 'gross_motor',
-        DevelopmentDomain.fineMotor          => 'fine_motor',
+        DevelopmentDomain.physicalDevelopment => 'gross_motor',
         DevelopmentDomain.languageCommunication => 'language',
         DevelopmentDomain.cognitive          => 'cognitive',
-        DevelopmentDomain.socialBehavioral   => 'social',
+        DevelopmentDomain.socialEmotional    => 'social',
       };
 
   static DevelopmentDomain fromJson(String value) => DevelopmentDomain.values
@@ -185,5 +182,21 @@ enum ModuleStatus {
   static ModuleStatus fromJson(String value) => ModuleStatus.values.firstWhere(
         (e) => e.name == value,
         orElse: () => throw ArgumentError('Unknown module status: $value'),
+      );
+}
+
+/// Anthropometric measurement type for growth monitoring (WHO separates length and height).
+enum MeasurementType {
+  length,
+  height;
+
+  String get label => switch (this) {
+        MeasurementType.length => 'Length (Recumbent)',
+        MeasurementType.height => 'Height (Standing)',
+      };
+
+  static MeasurementType fromJson(String value) => MeasurementType.values.firstWhere(
+        (e) => e.name == value,
+        orElse: () => throw ArgumentError('Unknown measurement type: $value'),
       );
 }
