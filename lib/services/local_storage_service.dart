@@ -21,6 +21,7 @@ class LocalStorageService {
   static const String _resultsPrefix = 'results_';
   static const String _moduleResultsPrefix = 'mod_res_';
   static const String _growthPrefix = 'growth_';
+  static const String _vaccinationPrefix = 'vac_';
   
   /// Initializes the SharedPreferences instance. Must be called before any operations.
   Future<void> init() async {
@@ -242,5 +243,38 @@ class LocalStorageService {
       }
     }
     return assessments;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Vaccination Records
+  // ---------------------------------------------------------------------------
+
+  /// Saves a raw vaccination record for a child.
+  Future<void> saveVaccinationRecord(dynamic record) async {
+    if (!_isInitialised) return;
+    // record is expected to be VaccinationRecord
+    final key = '$_vaccinationPrefix${record.childId}_${record.vaccineId}';
+    final jsonString = jsonEncode(record.toJson());
+    await _prefs.setString(key, jsonString);
+  }
+
+  /// Retrieves all vaccination records for a specific child.
+  List<dynamic> getVaccinationRecordsForChildRaw(String childId) {
+    if (!_isInitialised) return [];
+    final prefix = '$_vaccinationPrefix${childId}_';
+    final keys = _prefs.getKeys().where((k) => k.startsWith(prefix));
+    
+    final records = [];
+    for (final key in keys) {
+      final jsonString = _prefs.getString(key);
+      if (jsonString != null) {
+        try {
+          records.add(jsonDecode(jsonString));
+        } catch (e) {
+          debugPrint('[LocalStorageService] Failed to parse vaccination record at $key: $e');
+        }
+      }
+    }
+    return records;
   }
 }

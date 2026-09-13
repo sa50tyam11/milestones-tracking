@@ -92,6 +92,16 @@ class FinalDashboardScreen extends StatelessWidget {
                     },
                   ),
 
+                  // Vaccination Module
+                  ModuleStatusCard(
+                    title: 'Vaccination Schedule',
+                    status: profile.vaccinationResult?.status ?? ModuleStatus.notStarted,
+                    icon: Icons.vaccines,
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.vaccination);
+                    },
+                  ),
+
                   // Eye Tracking Module
                   ModuleStatusCard(
                     title: 'Eye Tracking (NeuroGaze)',

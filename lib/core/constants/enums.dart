@@ -138,6 +138,19 @@ enum VaccinationStatus {
           orElse: () => throw ArgumentError('Unknown vaccination status: $value'));
 }
 
+/// Status of an individual vaccination record
+enum VaccineRecordStatus {
+  due,
+  completed,
+  pending,
+  notApplicable,
+  unknown;
+
+  static VaccineRecordStatus fromJson(String value) =>
+      VaccineRecordStatus.values.firstWhere((e) => e.name == value,
+          orElse: () => throw ArgumentError('Unknown vaccine record status: $value'));
+}
+
 enum MilestoneDifficulty {
   foundational,
   developing,

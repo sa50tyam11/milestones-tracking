@@ -13,6 +13,7 @@ class ChildProfile {
     required this.child,
     this.milestoneResult,
     this.growthResult,
+    this.vaccinationResult,
     this.eyeTrackingResult,
     this.nutritionResult,
   });
@@ -25,6 +26,9 @@ class ChildProfile {
   /// From Growth Monitoring
   final ModuleResult? growthResult;
   
+  /// From Vaccination Schedule
+  final ModuleResult? vaccinationResult;
+  
   /// Future integration
   final ModuleResult? eyeTrackingResult;
   
@@ -36,6 +40,7 @@ class ChildProfile {
   bool get isFullyCompleted {
     return _isCompleted(milestoneResult) &&
            _isCompleted(growthResult) &&
+           _isCompleted(vaccinationResult) &&
            _isCompleted(eyeTrackingResult) &&
            _isCompleted(nutritionResult);
   }
@@ -51,6 +56,7 @@ class ChildProfile {
           other.child.id == child.id &&
           other.milestoneResult == milestoneResult &&
           other.growthResult == growthResult &&
+          other.vaccinationResult == vaccinationResult &&
           other.eyeTrackingResult == eyeTrackingResult &&
           other.nutritionResult == nutritionResult;
 
@@ -59,6 +65,7 @@ class ChildProfile {
       child.id.hashCode ^
       milestoneResult.hashCode ^
       growthResult.hashCode ^
+      vaccinationResult.hashCode ^
       eyeTrackingResult.hashCode ^
       nutritionResult.hashCode;
 

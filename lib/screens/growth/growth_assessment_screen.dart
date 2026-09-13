@@ -164,7 +164,7 @@ class _GrowthAssessmentScreenState extends State<GrowthAssessmentScreen> {
                 const SizedBox(height: 8),
                 
                 DropdownButtonFormField<MeasurementType>(
-                  value: _measurementType,
+                  initialValue: _measurementType,
                   decoration: const InputDecoration(
                     labelText: 'Measurement Type',
                     border: OutlineInputBorder(),

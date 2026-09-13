@@ -87,6 +87,7 @@ void main() {
         child: child,
         milestoneResult: ModuleResult(module: 'milestone', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
         growthResult: ModuleResult(module: 'growth', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
+        vaccinationResult: ModuleResult(module: 'vaccination', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
         eyeTrackingResult: ModuleResult(module: 'eye_tracking', childId: 'child_1', status: ModuleStatus.pending, updatedAt: now),
         nutritionResult: ModuleResult(module: 'nutrition', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
       );
@@ -99,6 +100,7 @@ void main() {
         child: child,
         milestoneResult: ModuleResult(module: 'milestone', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
         growthResult: ModuleResult(module: 'growth', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
+        vaccinationResult: ModuleResult(module: 'vaccination', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
         eyeTrackingResult: ModuleResult(module: 'eye_tracking', childId: 'child_1', status: ModuleStatus.pending, updatedAt: now),
         nutritionResult: ModuleResult(module: 'nutrition', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
       );
@@ -110,6 +112,7 @@ void main() {
         child: child,
         milestoneResult: ModuleResult(module: 'milestone', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
         growthResult: ModuleResult(module: 'growth', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
+        vaccinationResult: ModuleResult(module: 'vaccination', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
         eyeTrackingResult: ModuleResult(module: 'eye_tracking', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
         nutritionResult: ModuleResult(module: 'nutrition', childId: 'child_1', status: ModuleStatus.notStarted, updatedAt: now),
       );
@@ -121,6 +124,7 @@ void main() {
         child: child,
         milestoneResult: ModuleResult(module: 'milestone', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
         growthResult: ModuleResult(module: 'growth', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
+        vaccinationResult: ModuleResult(module: 'vaccination', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
         eyeTrackingResult: ModuleResult(module: 'eye_tracking', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
         nutritionResult: ModuleResult(module: 'nutrition', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
       );
@@ -132,6 +136,7 @@ void main() {
         child: child,
         milestoneResult: ModuleResult(module: 'milestone', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
         growthResult: ModuleResult(module: 'growth', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
+        vaccinationResult: ModuleResult(module: 'vaccination', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
         eyeTrackingResult: ModuleResult(module: 'eye_tracking', childId: 'child_1', status: ModuleStatus.failed, updatedAt: now),
         nutritionResult: ModuleResult(module: 'nutrition', childId: 'child_1', status: ModuleStatus.completed, updatedAt: now),
       );
@@ -212,6 +217,7 @@ void main() {
       expect(profile!.milestoneResult?.status, ModuleStatus.notStarted);
       // Eye Tracking & Nutrition missing so notStarted
       expect(profile.growthResult?.status, ModuleStatus.notStarted);
+      expect(profile.vaccinationResult?.status, ModuleStatus.pending);
       expect(profile.eyeTrackingResult?.status, ModuleStatus.notStarted);
       expect(profile.nutritionResult?.status, ModuleStatus.notStarted);
       expect(profile.isFullyCompleted, false);

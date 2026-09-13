@@ -97,10 +97,20 @@ class DashboardProvider extends ChangeNotifier {
         updatedAt: DateTime.now(),
       );
 
+      ModuleResult? vaccinationResult = _storageService!.getModuleResult(activeChild.id, 'vaccination');
+      vaccinationResult ??= ModuleResult(
+        module: 'vaccination',
+        childId: activeChild.id,
+        status: ModuleStatus.pending,
+        updatedAt: DateTime.now(),
+        payload: { 'scheduleAvailable': false },
+      );
+
       _currentProfile = ChildProfile(
         child: activeChild,
         milestoneResult: milestoneModuleResult,
         growthResult: growthResult,
+        vaccinationResult: vaccinationResult,
         eyeTrackingResult: eyeTrackingResult,
         nutritionResult: nutritionResult,
       );

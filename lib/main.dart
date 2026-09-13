@@ -18,6 +18,7 @@ import 'screens/milestone/assessment_complete_screen.dart';
 import 'providers/dashboard_provider.dart';
 import 'screens/dashboard/final_dashboard_screen.dart';
 import 'screens/growth/growth_assessment_screen.dart';
+import 'screens/vaccination/vaccination_screen.dart';
 
 // ---------------------------------------------------------------------------
 // Application entry point
@@ -170,7 +171,7 @@ class ShishuCareApp extends StatelessWidget {
 
           // Phase 11+ routes
           AppRoutes.growth:      (_) => const GrowthAssessmentScreen(),
-          // AppRoutes.vaccination: (_) => const VaccinationScreen(),
+          AppRoutes.vaccination: (_) => const VaccinationScreen(),
 
           // Phase 14+ routes
           // AppRoutes.compositeResult:    (_) => const CompositeResultScreen(),
